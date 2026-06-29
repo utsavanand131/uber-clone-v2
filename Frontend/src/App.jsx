@@ -1,9 +1,31 @@
-export default function App() {
+import { useState } from "react";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "./assets/vite.svg";
+import "./App.css";
+import { Route, Routes } from "react-router-dom";
+import Home from "./pages/Home";
+import UserLogin from "./pages/UserLogin";
+import UserRegister from "./pages/UserRegister";
+import CaptainLogin from "./pages/CaptainLogin";
+import CaptainRegister from "./pages/CaptainRegister";
+import Layout from "./features/global/components/layout";
+
+function App() {
+  const [count, setCount] = useState(0);
+
   return (
-    <div className="h-screen flex items-center justify-center">
-      <h1 className="text-4xl font-bold text-blue-500">
-        Tailwind v4 is working 🚀
-      </h1>
+    <div>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="/user-login" element={<UserLogin />} />
+          <Route path="/user-register" element={<UserRegister />} />
+          <Route path="/captain-login" element={<CaptainLogin />} />
+          <Route path="/captain-register" element={<CaptainRegister />} />
+        </Route>
+      </Routes>
     </div>
   );
 }
+
+export default App;
