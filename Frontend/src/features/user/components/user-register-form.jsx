@@ -69,10 +69,14 @@ export default function UserRegisterForm() {
         password: data.password,
       };
 
+      console.log("Sending:", formattedUser);
+
       const res = await axios.post(
         "http://localhost:5001/api/v1/users/register",
         formattedUser,
       );
+
+      console.log("SUCCESS:", res.data);
 
       setUser(res.data.user);
       localStorage.setItem("token", res.data.token);
@@ -82,8 +86,15 @@ export default function UserRegisterForm() {
       reset();
       navigate("/");
     } catch (err) {
-      console.log(err);
-      toast.error("Something went wrong");
+      console.log("STATUS:", err.response?.status);
+      console.log("DATA:", err.response?.data);
+      console.log("ERROR:", err);
+
+      toast.error(
+        err.response?.data?.message ||
+          err.response?.data?.errors?.[0]?.msg ||
+          "Something went wrong",
+      );
     } finally {
       setLoading(false);
     }
