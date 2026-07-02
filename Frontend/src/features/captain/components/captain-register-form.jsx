@@ -1,8 +1,10 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import axios from "axios";
+import { toast } from "sonner";
 
 import { Mail, Lock, Eye, EyeOff, User, Car } from "lucide-react";
 
@@ -37,11 +39,14 @@ const captainSchema = z.object({
 
   vehicleCapacity: z.string().min(1, "Vehicle capacity is required"),
 
-  vehicleType: z.enum(["car", "auto", "bike"]),
+  vehicleType: z.enum(["car", "auto", "motorcycle"]),
 });
+
 export default function CaptainRegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const {
     register,
@@ -62,8 +67,52 @@ export default function CaptainRegisterForm() {
     },
   });
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    try {
+      setLoading(true);
+
+      const formattedCaptain = {
+        fullname: {
+          firstname: data.firstName,
+          lastname: data.lastName,
+        },
+        email: data.email,
+        password: data.password,
+        vehicles: {
+          color: data.vehicleColor,
+          plate: data.vehiclePlate,
+          capacity: Number(data.vehicleCapacity),
+          vehicleType: data.vehicleType,
+        },
+      };
+
+      console.log("Sending:", formattedCaptain);
+
+      const res = await axios.post(
+        "http://localhost:5001/api/v1/captain/register",
+        formattedCaptain,
+      );
+
+      console.log("SUCCESS:", res.data);
+
+      localStorage.setItem("token", res.data.token);
+
+      toast.success("Captain registered successfully");
+
+      navigate("/");
+    } catch (err) {
+      console.log("STATUS:", err.response?.status);
+      console.log("DATA:", err.response?.data);
+      console.log("ERROR:", err);
+
+      toast.error(
+        err.response?.data?.message ||
+          err.response?.error?.[0]?.msg ||
+          "Something went wrong",
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -117,6 +166,7 @@ export default function CaptainRegisterForm() {
                 </div>
               </div>
             </div>
+
             <div>
               <label className="text-sm font-medium">Email</label>
 
@@ -133,7 +183,7 @@ export default function CaptainRegisterForm() {
 
               <p className="text-sm text-red-500">{errors.email?.message}</p>
             </div>
-            {/* Password */}
+
             <div>
               <label className="text-sm font-medium">Password</label>
 
@@ -164,11 +214,8 @@ export default function CaptainRegisterForm() {
             </div>
           </div>
 
-          {/* Vehicle Information */}
-
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Vehicle Information</h3>
-
             {/* Vehicle Type */}
 
             <div>
@@ -196,10 +243,10 @@ export default function CaptainRegisterForm() {
                 <label className="flex items-center gap-2 border rounded-md p-3 cursor-pointer">
                   <input
                     type="radio"
-                    value="bike"
+                    value="motorcycle"
                     {...register("vehicleType")}
                   />
-                  Bike
+                  Motorcycle
                 </label>
               </div>
 
@@ -224,7 +271,7 @@ export default function CaptainRegisterForm() {
               </p>
             </div>
 
-            {/* Vehicle Plate */}
+            {/* License Plate */}
 
             <div>
               <label className="text-sm font-medium">License Plate</label>
@@ -261,6 +308,7 @@ export default function CaptainRegisterForm() {
               </p>
             </div>
           </div>
+
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Creating Account..." : "Create Account"}
           </Button>
