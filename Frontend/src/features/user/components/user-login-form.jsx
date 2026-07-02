@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import axios from "axios";
+
 import { Mail, Lock, Eye, EyeOff, UserRound, ArrowRight } from "lucide-react";
-import { NavLink } from "react-router-dom";
+
+import { NavLink, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,6 +21,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+import { UserDataContext } from "../context/UserContext";
+
 const loginSchema = z.object({
   email: z
     .string()
@@ -29,6 +35,9 @@ const loginSchema = z.object({
 export default function UserLoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const { setUser } = useContext(UserDataContext);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -48,13 +57,38 @@ export default function UserLoginForm() {
   const rememberMe = watch("rememberMe");
 
   const onSubmit = async (data) => {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    console.log(data);
+      console.log("Sending:", data);
 
-    setTimeout(() => {
+      const res = await axios.post("http://localhost:5001/api/v1/users/login", {
+        email: data.email,
+        password: data.password,
+      });
+
+      console.log("SUCCESS:", res.data);
+
+      setUser(res.data.user);
+
+      localStorage.setItem("token", res.data.token);
+
+      toast.success("User logged in successfully");
+
+      navigate("/");
+    } catch (err) {
+      console.log("STATUS:", err.response?.status);
+      console.log("DATA:", err.response?.data);
+      console.log("ERROR:", err);
+
+      toast.error(
+        err.response?.data?.message ||
+          err.response?.data?.errors?.[0]?.msg ||
+          "Something went wrong",
+      );
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
   };
 
   return (
