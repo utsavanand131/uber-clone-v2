@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import axios from "axios";
 
 import { Mail, Lock, Eye, EyeOff, Car } from "lucide-react";
 
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +22,8 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 
+import { CaptainDataContext } from "../context/CaptainContext";
+
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
 
@@ -31,6 +35,9 @@ const loginSchema = z.object({
 export default function CaptainLoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  const { setCaptain } = useContext(CaptainDataContext);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -48,17 +55,42 @@ export default function CaptainLoginForm() {
   });
 
   const rememberMe = watch("rememberMe");
-
   const onSubmit = async (data) => {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    console.log(data);
+      console.log("Sending:", data);
 
-    setTimeout(() => {
+      const res = await axios.post(
+        "http://localhost:5001/api/v1/captain/login",
+        {
+          email: data.email,
+          password: data.password,
+        },
+      );
+
+      console.log("SUCCESS:", res.data);
+
+      setCaptain(res.data.captain);
+      localStorage.setItem("token", res.data.token);
+
+      toast.success("Captain logged in successfully");
+
+      navigate("/");
+    } catch (err) {
+      console.log("STATUS:", err.response?.status);
+      console.log("DATA:", err.response?.data);
+      console.log("ERROR:", err);
+
+      toast.error(
+        err.response?.data?.message ||
+          err.response?.data?.errors?.[0]?.msg ||
+          "Something went wrong",
+      );
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
   };
-
   return (
     <Card className="w-full max-w-md border-2 shadow-lg">
       <CardHeader>
