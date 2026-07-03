@@ -4,6 +4,7 @@ import "leaflet/dist/leaflet.css";
 import { Icon } from "leaflet";
 import { CarFront } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import RideBookingCard from "./RideBookingCard";
 
 // Custom hook for controlling the map
 function MapController({ center }) {
@@ -17,9 +18,7 @@ function MapController({ center }) {
 }
 
 const HeroMap = () => {
-  const [pickup, setPickup] = useState("");
-  const [dropoff, setDropoff] = useState("");
-  const [selectedType, setSelectedType] = useState("ride");
+  // We only need the map center here
   const [mapCenter] = useState([28.6139, 77.209]); // Delhi
 
   const customIcon = new Icon({
@@ -28,10 +27,6 @@ const HeroMap = () => {
     iconAnchor: [19, 38],
     popupAnchor: [0, -38],
   });
-
-  const handleRideTypeChange = (type) => {
-    setSelectedType(type);
-  };
 
   return (
     <div className="flex flex-col lg:flex-row w-full min-h-screen bg-white px-8 lg:px-12">
@@ -42,15 +37,15 @@ const HeroMap = () => {
           <span className="block">Uber</span>
         </h1>
 
-        <div className="mt-8 flex flex-col items-start space-y-2">
+        <div className="mt-8 flex flex-col items-start space-y-4">
           <Button variant="outline" size="icon">
             <CarFront size={26} />
           </Button>
 
-          <span className="font-medium">Ride</span>
-        </div>
+          <span className="text-lg font-medium">Ride</span>
 
-        {/* TODO: Add ride fields here */}
+          <RideBookingCard />
+        </div>
       </div>
 
       {/* Right Section */}
