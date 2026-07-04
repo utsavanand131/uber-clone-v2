@@ -4,7 +4,9 @@ const API = axios.create({
   baseURL: "http://localhost:5001/api/v1",
 });
 
-// Attach JWT token automatically
+// ===========================
+// Attach JWT Token
+// ===========================
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
 
@@ -33,6 +35,20 @@ export const getDistanceTime = async (origin, destination) => {
   const { data } = await API.get("/maps/get-distance-time", {
     params: {
       origin,
+      destination,
+    },
+  });
+
+  return data;
+};
+
+// ===========================
+// Get Fare
+// ===========================
+export const getFare = async (pickup, destination) => {
+  const { data } = await API.get("/rides/get-fare", {
+    params: {
+      pickup,
       destination,
     },
   });
