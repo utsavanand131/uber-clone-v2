@@ -68,3 +68,15 @@ export const getSuggestions = async (input) => {
 
   return data;
 };
+// ===========================
+// Create Ride
+// ===========================
+export const createRide = async ({ pickup, destination, vehicleType }) => {
+  const { data } = await API.post("/rides/create", {
+    pickup,
+    destination,
+    vehicleType,
+  });
+
+  return data;
+};
