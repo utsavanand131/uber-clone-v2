@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 
 import LocationSearchPanel from "./LocationSearchPanel";
 import VehiclePanel from "./VehiclePanel";
+import ConfirmRidePanel from "./ConfirmRidePanel";
 
 import { getFare, getSuggestions } from "@/features/map/services/map.service";
 
@@ -40,6 +41,10 @@ const RideBookingCard = () => {
   const [suggestions, setSuggestions] = useState([]);
 
   const [showVehiclePanel, setShowVehiclePanel] = useState(false);
+  const [showConfirmRide, setShowConfirmRide] = useState(false);
+
+  const [selectedVehicle, setSelectedVehicle] = useState(null);
+
   const [fare, setFare] = useState(null);
 
   // =========================
@@ -97,14 +102,10 @@ const RideBookingCard = () => {
   // SEARCH RIDE
   // =========================
   const handleSearchRide = async () => {
-    if (!pickup.address || !destination.address) {
-      return;
-    }
+    if (!pickup.address || !destination.address) return;
 
     try {
       const fareData = await getFare(pickup.address, destination.address);
-
-      console.log(fareData);
 
       setFare(fareData);
       setShowVehiclePanel(true);
@@ -114,11 +115,39 @@ const RideBookingCard = () => {
   };
 
   // =========================
+  // CONFIRM RIDE PANEL
+  // =========================
+  if (showConfirmRide) {
+    return (
+      <ConfirmRidePanel
+        pickup={pickup}
+        destination={destination}
+        fare={fare}
+        selectedVehicle={selectedVehicle}
+        onRideCreated={(ride) => {
+          console.log("Ride created successfully:", ride);
+
+          // Next screen (Looking for Driver) will go here.
+        }}
+      />
+    );
+  }
+
+  // =========================
   // VEHICLE PANEL
   // =========================
   if (showVehiclePanel) {
     return (
-      <VehiclePanel fare={fare} pickup={pickup} destination={destination} />
+      <VehiclePanel
+        fare={fare}
+        pickup={pickup}
+        destination={destination}
+        onSelectVehicle={(vehicle) => {
+          setSelectedVehicle(vehicle);
+          setShowVehiclePanel(false);
+          setShowConfirmRide(true);
+        }}
+      />
     );
   }
 
