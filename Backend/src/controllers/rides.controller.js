@@ -1,11 +1,11 @@
 import { validationResult } from "express-validator";
 import {
   getAddressCoordinate,
-  getAutoCompleteSuggestionservice,
   getCaptainInTheRadius,
-  getDistanceAndTime,
 } from "../services/map.services.js";
+
 import rideModel from "../models/ride.model.js";
+
 import {
   confirmRideService,
   createRideService,
@@ -13,15 +13,20 @@ import {
   getFareService,
   startRideService,
 } from "../services/rides.services.js";
+
 import { sendMessageToSocketId } from "../socket.js";
 
+// =========================
+// Create Ride
+// =========================
 export const createRide = async (req, res) => {
   const errors = validationResult(req);
+
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { userId, pickup, destination, vehicleType } = req.body;
+  const { pickup, destination, vehicleType } = req.body;
 
   try {
     const ride = await createRideService({
@@ -43,11 +48,9 @@ export const createRide = async (req, res) => {
 
     ride.otp = "";
 
-    const rideWithUser = await rideModel
-      .findOne({ _id: ride._id })
-      .populate("user");
+    const rideWithUser = await rideModel.findById(ride._id).populate("user");
 
-    captainsInRadius.map((captain) => {
+    captainsInRadius.forEach((captain) => {
       sendMessageToSocketId(captain.socketId, {
         event: "new-ride",
         data: rideWithUser,
@@ -59,13 +62,17 @@ export const createRide = async (req, res) => {
   }
 };
 
+// =========================
+// Get Fare
+// =========================
 export const getFare = async (req, res) => {
   const errors = validationResult(req);
+
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { pickup, destination } = req.body;
+  const { pickup, destination } = req.query;
 
   try {
     const fare = await getFareService(pickup, destination);
@@ -77,8 +84,12 @@ export const getFare = async (req, res) => {
   }
 };
 
+// =========================
+// Confirm Ride
+// =========================
 export const confirmRide = async (req, res) => {
   const errors = validationResult(req);
+
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
@@ -86,7 +97,10 @@ export const confirmRide = async (req, res) => {
   const { rideId } = req.body;
 
   try {
-    const ride = await confirmRideService({ rideId, captain: req.captain });
+    const ride = await confirmRideService({
+      rideId,
+      captain: req.captain,
+    });
 
     sendMessageToSocketId(ride.user.socketId, {
       event: "new-ride",
@@ -96,20 +110,28 @@ export const confirmRide = async (req, res) => {
     return res.status(200).json(ride);
   } catch (error) {
     console.log(error);
-    res.status(404).json({ error: "Ride not confirmed" });
+    return res.status(404).json({ error: "Ride not confirmed" });
   }
 };
 
+// =========================
+// Start Ride
+// =========================
 export const startRide = async (req, res) => {
   const errors = validationResult(req);
+
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { rideId, otp } = req.body;
+  const { rideId, otp } = req.query;
 
   try {
-    const ride = await startRideService({ rideId, otp, captain: req.captain });
+    const ride = await startRideService({
+      rideId,
+      otp,
+      captain: req.captain,
+    });
 
     sendMessageToSocketId(ride.user.socketId, {
       event: "ride-started",
@@ -119,12 +141,16 @@ export const startRide = async (req, res) => {
     return res.status(200).json(ride);
   } catch (error) {
     console.log(error);
-    res.status(404).json({ error: "Ride not started" });
+    return res.status(404).json({ error: "Ride not started" });
   }
 };
 
+// =========================
+// End Ride
+// =========================
 export const endRide = async (req, res) => {
   const errors = validationResult(req);
+
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
@@ -132,7 +158,10 @@ export const endRide = async (req, res) => {
   const { rideId } = req.body;
 
   try {
-    const ride = await endRideService({ rideId, captain: req.captain });
+    const ride = await endRideService({
+      rideId,
+      captain: req.captain,
+    });
 
     sendMessageToSocketId(ride.user.socketId, {
       event: "ride-ended",
