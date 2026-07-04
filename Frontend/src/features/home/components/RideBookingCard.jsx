@@ -1,25 +1,24 @@
 import { useEffect, useState } from "react";
-import { ArrowRight, Circle, MapPin, Clock3, Route } from "lucide-react";
+import { ArrowRight, Circle, MapPin } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import LocationSearchPanel from "./LocationSearchPanel";
-import {
-  getSuggestions,
-  getDistanceTime,
-} from "@/features/map/services/map.service";
+import VehiclePanel from "./VehiclePanel";
+
+import { getFare, getSuggestions } from "@/features/map/services/map.service";
 
 const RideBookingCard = () => {
   // =========================
-  // INPUT STATES
+  // INPUT STATES (TEXT)
   // =========================
   const [pickupInput, setPickupInput] = useState("");
   const [destinationInput, setDestinationInput] = useState("");
 
   // =========================
-  // SELECTED LOCATIONS
+  // FINAL SELECTED VALUES
   // =========================
   const [pickup, setPickup] = useState({
     address: "",
@@ -40,19 +39,22 @@ const RideBookingCard = () => {
   const [activeField, setActiveField] = useState("pickup");
   const [suggestions, setSuggestions] = useState([]);
 
-  // =========================
-  // TRIP INFO
-  // =========================
-  const [tripInfo, setTripInfo] = useState(null);
-  const [loadingTrip, setLoadingTrip] = useState(false);
+  const [showVehiclePanel, setShowVehiclePanel] = useState(false);
+  const [fare, setFare] = useState(null);
 
   // =========================
-  // LIVE SUGGESTIONS
+  // DEBOUNCED API CALL
   // =========================
   useEffect(() => {
     const timeout = setTimeout(async () => {
       try {
-        const query = activeField === "pickup" ? pickupInput : destinationInput;
+        let query = "";
+
+        if (activeField === "pickup") {
+          query = pickupInput;
+        } else {
+          query = destinationInput;
+        }
 
         if (query.length < 2) {
           setSuggestions([]);
@@ -62,7 +64,7 @@ const RideBookingCard = () => {
         const data = await getSuggestions(query);
         setSuggestions(data);
       } catch (err) {
-        console.log(err);
+        console.log("Suggestion error:", err);
       }
     }, 300);
 
@@ -70,30 +72,7 @@ const RideBookingCard = () => {
   }, [pickupInput, destinationInput, activeField]);
 
   // =========================
-  // DISTANCE + TIME
-  // =========================
-  useEffect(() => {
-    const fetchTripInfo = async () => {
-      if (!pickup.address || !destination.address) return;
-
-      try {
-        setLoadingTrip(true);
-
-        const data = await getDistanceTime(pickup.address, destination.address);
-
-        setTripInfo(data);
-      } catch (err) {
-        console.log(err);
-      } finally {
-        setLoadingTrip(false);
-      }
-    };
-
-    fetchTripInfo();
-  }, [pickup, destination]);
-
-  // =========================
-  // LOCATION SELECT
+  // HANDLE LOCATION SELECT
   // =========================
   const handleLocationSelect = (place) => {
     const location = {
@@ -105,30 +84,47 @@ const RideBookingCard = () => {
     if (activeField === "pickup") {
       setPickup(location);
       setPickupInput(place.display_name);
-
-      // Automatically move user to destination
-      setActiveField("destination");
     } else {
       setDestination(location);
       setDestinationInput(place.display_name);
-
-      setShowSuggestions(false);
     }
 
     setSuggestions([]);
+    setShowSuggestions(false);
   };
 
   // =========================
-  // SEARCH BUTTON
+  // SEARCH RIDE
   // =========================
-  const handleSearchRide = () => {
-    console.log({
-      pickup,
-      destination,
-      tripInfo,
-    });
+  const handleSearchRide = async () => {
+    if (!pickup.address || !destination.address) {
+      return;
+    }
+
+    try {
+      const fareData = await getFare(pickup.address, destination.address);
+
+      console.log(fareData);
+
+      setFare(fareData);
+      setShowVehiclePanel(true);
+    } catch (err) {
+      console.log("Fare Error:", err);
+    }
   };
 
+  // =========================
+  // VEHICLE PANEL
+  // =========================
+  if (showVehiclePanel) {
+    return (
+      <VehiclePanel fare={fare} pickup={pickup} destination={destination} />
+    );
+  }
+
+  // =========================
+  // BOOKING CARD
+  // =========================
   return (
     <div className="w-full max-w-lg bg-white rounded-3xl border shadow-lg p-6 mt-2">
       <div className="space-y-5">
@@ -141,7 +137,6 @@ const RideBookingCard = () => {
         </div>
 
         {/* Pickup */}
-
         <div className="relative">
           <Circle
             size={14}
@@ -161,11 +156,10 @@ const RideBookingCard = () => {
         </div>
 
         {/* Destination */}
-
         <div className="relative">
           <MapPin
             size={18}
-            className="absolute left-4 top-1/2 -translate-y-1/2"
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-black"
           />
 
           <Input
@@ -180,40 +174,13 @@ const RideBookingCard = () => {
           />
         </div>
 
-        {/* Search */}
-
-        <Button className="w-full h-12 rounded-xl" onClick={handleSearchRide}>
+        <Button
+          className="w-full h-12 rounded-xl text-base"
+          onClick={handleSearchRide}
+        >
           Search Ride
           <ArrowRight className="ml-2 h-5 w-5" />
         </Button>
-
-        {/* Distance */}
-
-        {loadingTrip && (
-          <div className="rounded-xl border p-4 bg-gray-50 text-sm">
-            Calculating route...
-          </div>
-        )}
-
-        {tripInfo && !loadingTrip && (
-          <div className="rounded-xl border bg-gray-50 p-4 space-y-3">
-            <div className="flex items-center gap-2">
-              <Route size={18} />
-              <span className="font-medium">
-                {tripInfo.distance_km.toFixed(1)} km
-              </span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Clock3 size={18} />
-              <span className="text-gray-600">
-                {tripInfo.duration_min.toFixed(0)} mins
-              </span>
-            </div>
-          </div>
-        )}
-
-        {/* Suggestions */}
 
         <AnimatePresence>
           {showSuggestions && (
