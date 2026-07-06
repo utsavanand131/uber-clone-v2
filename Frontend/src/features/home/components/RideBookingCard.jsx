@@ -12,27 +12,17 @@ import LookingForDriverPanel from "./LookingForDriverPanel";
 
 import { getFare, getSuggestions } from "@/features/map/services/map.service";
 
-const RideBookingCard = () => {
+const RideBookingCard = ({
+  pickup,
+  setPickup,
+  destination,
+  setDestination,
+}) => {
   // =========================
   // INPUT STATES (TEXT)
   // =========================
   const [pickupInput, setPickupInput] = useState("");
   const [destinationInput, setDestinationInput] = useState("");
-
-  // =========================
-  // FINAL SELECTED VALUES
-  // =========================
-  const [pickup, setPickup] = useState({
-    address: "",
-    lat: null,
-    lng: null,
-  });
-
-  const [destination, setDestination] = useState({
-    address: "",
-    lat: null,
-    lng: null,
-  });
 
   // =========================
   // UI STATES
