@@ -51,22 +51,27 @@ export const getDistanceAndTime = async (originName, destinationName) => {
       throw new Error("No routes returned from OpenRouteService");
     }
 
-    const segment = response.data.features[0].properties.segments[0];
+    const feature = response.data.features[0];
+    const segment = feature.properties.segments[0];
 
     return {
       origin: originName,
       destination: destinationName,
+
       distance_km: Number((segment.distance / 1000).toFixed(2)),
       duration_min: Number((segment.duration / 60).toFixed(2)),
+
       origin_coords: origin,
       destination_coords: destination,
+
+      // 👇 NEW
+      route: feature.geometry.coordinates,
     };
   } catch (error) {
     console.error("Distance Service Error:", error.message);
     throw error;
   }
 };
-
 // ========================
 // Auto Complete Suggestions
 // ========================

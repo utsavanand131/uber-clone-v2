@@ -80,3 +80,17 @@ export const createRide = async ({ pickup, destination, vehicleType }) => {
 
   return data;
 };
+
+// ===========================
+// Get Route
+// ===========================
+export const getRoute = async (pickup, destination) => {
+  const { data } = await API.get("/maps/get-route", {
+    params: {
+      pickup,
+      destination,
+    },
+  });
+
+  return data;
+};
