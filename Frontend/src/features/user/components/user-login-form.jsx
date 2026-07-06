@@ -68,6 +68,7 @@ export default function UserLoginForm() {
       });
 
       console.log("SUCCESS:", res.data);
+      console.log("Logged In User:", res.data.user);
 
       setUser(res.data.user);
 

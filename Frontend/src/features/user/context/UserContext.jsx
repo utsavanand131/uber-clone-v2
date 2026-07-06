@@ -1,9 +1,11 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
+import socket from "../../../socket/socket";
 
 export const UserDataContext = createContext();
 
 const UserContext = ({ children }) => {
   const [user, setUser] = useState({
+    _id: "",
     email: "",
     fullname: {
       firstname: "",
@@ -11,12 +13,21 @@ const UserContext = ({ children }) => {
     },
   });
 
+  useEffect(() => {
+    if (!user?._id) return;
+
+    socket.emit("join", {
+      userId: user._id,
+      userType: "user",
+    });
+
+    console.log("Socket Joined:", user._id);
+  }, [user]);
+
   return (
-    <>
-      <UserDataContext.Provider value={{ user, setUser }}>
-        {children}
-      </UserDataContext.Provider>
-    </>
+    <UserDataContext.Provider value={{ user, setUser }}>
+      {children}
+    </UserDataContext.Provider>
   );
 };
 

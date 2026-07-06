@@ -16,6 +16,8 @@ function initializeSocket(server) {
     console.log("User connected:", socket.id);
 
     socket.on("join", async (data) => {
+      console.log("JOIN EVENT:", data);
+
       const { userId, userType } = data;
 
       try {
@@ -23,13 +25,19 @@ function initializeSocket(server) {
           await userModel.findByIdAndUpdate(userId, {
             socketId: socket.id,
           });
-        } else if (userType === "captain") {
+
+          console.log("✅ User socket saved:", socket.id);
+        }
+
+        if (userType === "captain") {
           await captainModel.findByIdAndUpdate(userId, {
             socketId: socket.id,
           });
+
+          console.log("✅ Captain socket saved:", socket.id);
         }
       } catch (error) {
-        console.log(error);
+        console.log("Socket Join Error:", error);
       }
     });
 
