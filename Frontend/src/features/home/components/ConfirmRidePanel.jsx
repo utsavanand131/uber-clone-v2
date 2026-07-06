@@ -3,7 +3,13 @@ import { Button } from "@/components/ui/button";
 
 import { createRide } from "@/features/map/services/map.service";
 
-const ConfirmRidePanel = ({ pickup, destination, fare, selectedVehicle }) => {
+const ConfirmRidePanel = ({
+  pickup,
+  destination,
+  fare,
+  selectedVehicle,
+  onRideCreated,
+}) => {
   const getVehicleIcon = () => {
     switch (selectedVehicle) {
       case "car":
@@ -29,6 +35,11 @@ const ConfirmRidePanel = ({ pickup, destination, fare, selectedVehicle }) => {
       });
 
       console.log("Ride Created:", ride);
+
+      // Notify parent component that ride has been created
+      if (onRideCreated) {
+        onRideCreated(ride);
+      }
     } catch (err) {
       console.log("Create Ride Error:", err);
     }
@@ -50,6 +61,7 @@ const ConfirmRidePanel = ({ pickup, destination, fare, selectedVehicle }) => {
         </div>
 
         <div className="rounded-2xl border divide-y">
+          {/* Pickup */}
           <div className="flex gap-4 p-4">
             <Circle className="h-4 w-4 mt-1" />
 
@@ -60,6 +72,7 @@ const ConfirmRidePanel = ({ pickup, destination, fare, selectedVehicle }) => {
             </div>
           </div>
 
+          {/* Destination */}
           <div className="flex gap-4 p-4">
             <MapPin className="h-5 w-5 mt-1" />
 
@@ -70,6 +83,7 @@ const ConfirmRidePanel = ({ pickup, destination, fare, selectedVehicle }) => {
             </div>
           </div>
 
+          {/* Fare */}
           <div className="flex justify-between items-center p-4">
             <span className="font-medium">Estimated Fare</span>
 

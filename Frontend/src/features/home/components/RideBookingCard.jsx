@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import LocationSearchPanel from "./LocationSearchPanel";
 import VehiclePanel from "./VehiclePanel";
 import ConfirmRidePanel from "./ConfirmRidePanel";
+import LookingForDriverPanel from "./LookingForDriverPanel";
 
 import { getFare, getSuggestions } from "@/features/map/services/map.service";
 
@@ -42,9 +43,9 @@ const RideBookingCard = () => {
 
   const [showVehiclePanel, setShowVehiclePanel] = useState(false);
   const [showConfirmRide, setShowConfirmRide] = useState(false);
+  const [showLookingForDriver, setShowLookingForDriver] = useState(false);
 
   const [selectedVehicle, setSelectedVehicle] = useState(null);
-
   const [fare, setFare] = useState(null);
 
   // =========================
@@ -115,6 +116,20 @@ const RideBookingCard = () => {
   };
 
   // =========================
+  // LOOKING FOR DRIVER PANEL
+  // =========================
+  if (showLookingForDriver) {
+    return (
+      <LookingForDriverPanel
+        pickup={pickup}
+        destination={destination}
+        fare={fare}
+        selectedVehicle={selectedVehicle}
+      />
+    );
+  }
+
+  // =========================
   // CONFIRM RIDE PANEL
   // =========================
   if (showConfirmRide) {
@@ -127,7 +142,8 @@ const RideBookingCard = () => {
         onRideCreated={(ride) => {
           console.log("Ride created successfully:", ride);
 
-          // Next screen (Looking for Driver) will go here.
+          setShowConfirmRide(false);
+          setShowLookingForDriver(true);
         }}
       />
     );
