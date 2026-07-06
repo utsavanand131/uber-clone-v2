@@ -15,10 +15,13 @@ function initializeSocket(server) {
   io.on("connection", (socket) => {
     console.log("User connected:", socket.id);
 
+    // =========================
+    // Join
+    // =========================
     socket.on("join", async (data) => {
-      console.log("JOIN EVENT:", data);
-
       const { userId, userType } = data;
+
+      console.log("JOIN:", data);
 
       try {
         if (userType === "user") {
@@ -26,7 +29,7 @@ function initializeSocket(server) {
             socketId: socket.id,
           });
 
-          console.log("✅ User socket saved:", socket.id);
+          console.log("✅ User socket saved");
         }
 
         if (userType === "captain") {
@@ -34,14 +37,20 @@ function initializeSocket(server) {
             socketId: socket.id,
           });
 
-          console.log("✅ Captain socket saved:", socket.id);
+          console.log("✅ Captain socket saved");
         }
       } catch (error) {
         console.log("Socket Join Error:", error);
       }
     });
 
+    // =========================
+    // Captain Location Update
+    // =========================
     socket.on("update-location-captain", async (data) => {
+      console.log("📍 update-location-captain received");
+      console.log(data);
+
       const { userId, location } = data;
 
       try {
@@ -51,8 +60,10 @@ function initializeSocket(server) {
             lng: location.lng,
           },
         });
+
+        console.log("✅ Captain location updated in MongoDB");
       } catch (error) {
-        console.log(error);
+        console.log("Location Update Error:", error);
       }
     });
 
@@ -62,12 +73,13 @@ function initializeSocket(server) {
   });
 }
 
+// =========================
+// Send Socket Event
+// =========================
 const sendMessageToSocketId = (socketId, messageObject) => {
-  if (io) {
-    io.to(socketId).emit(messageObject.event, messageObject.data);
-  } else {
-    console.log("Socket not initialized");
-  }
+  if (!io || !socketId) return;
+
+  io.to(socketId).emit(messageObject.event, messageObject.data);
 };
 
 export { initializeSocket, sendMessageToSocketId };

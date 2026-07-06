@@ -20,8 +20,6 @@ const UserContext = ({ children }) => {
       userId: user._id,
       userType: "user",
     });
-
-    console.log("Socket Joined:", user._id);
   }, [user]);
 
   return (

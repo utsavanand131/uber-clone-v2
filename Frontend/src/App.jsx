@@ -11,6 +11,7 @@ import CaptainRegister from "./pages/CaptainRegister";
 import Layout from "./features/global/components/layout";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import CaptainHome from "./pages/CaptainHome";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -26,6 +27,7 @@ function App() {
           <Route path="/user-register" element={<UserRegister />} />
           <Route path="/captain-login" element={<CaptainLogin />} />
           <Route path="/captain-register" element={<CaptainRegister />} />
+          <Route path="/captain-home" element={<CaptainHome />} />
         </Route>
       </Routes>
     </div>

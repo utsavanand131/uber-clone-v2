@@ -15,6 +15,7 @@ import {
 } from "../services/rides.services.js";
 
 import { sendMessageToSocketId } from "../socket.js";
+import captainModel from "../models/captain.model.js";
 
 // =========================
 // Create Ride
@@ -46,11 +47,16 @@ export const createRide = async (req, res) => {
       2,
     );
 
+    console.log("Pickup Coordinates:", pickupCoordinates);
+    console.log("Captains Found:", captainsInRadius.length);
+
     ride.otp = "";
 
     const rideWithUser = await rideModel.findById(ride._id).populate("user");
 
     captainsInRadius.forEach((captain) => {
+      if (!captain.socketId) return;
+
       sendMessageToSocketId(captain.socketId, {
         event: "new-ride",
         data: rideWithUser,
@@ -103,7 +109,7 @@ export const confirmRide = async (req, res) => {
     });
 
     sendMessageToSocketId(ride.user.socketId, {
-      event: "new-ride",
+      event: "ride-confirmed",
       data: ride,
     });
 

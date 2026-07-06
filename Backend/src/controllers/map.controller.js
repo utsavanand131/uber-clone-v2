@@ -24,8 +24,6 @@ export const getCoordinates = async (req, res) => {
 };
 
 export const getDistanceTime = async (req, res) => {
-  console.log("Distance API Hit");
-
   try {
     const errors = validationResult(req);
 
@@ -35,12 +33,7 @@ export const getDistanceTime = async (req, res) => {
 
     const { origin, destination } = req.query;
 
-    console.log("Origin:", origin);
-    console.log("Destination:", destination);
-
     const distanceTime = await getDistanceAndTime(origin, destination);
-
-    console.log("Distance Response:", distanceTime);
 
     res.status(200).json(distanceTime);
   } catch (error) {

@@ -94,3 +94,13 @@ export const getRoute = async (pickup, destination) => {
 
   return data;
 };
+// ===========================
+// Confirm Ride
+// ===========================
+export const confirmRide = async (rideId) => {
+  const { data } = await API.post("/rides/confirm", {
+    rideId,
+  });
+
+  return data;
+};

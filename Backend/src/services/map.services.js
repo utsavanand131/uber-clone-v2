@@ -103,12 +103,21 @@ export const getAutoCompleteSuggestionservice = async (input) => {
 // ========================
 export const getCaptainInTheRadius = async (lat, lng, radius) => {
   const captains = await captainModel.find({
-    location: {
-      $geoWithin: {
-        $centerSphere: [[lng, lat], radius / 6378.1],
-      },
-    },
+    socketId: { $exists: true, $ne: null },
   });
 
-  return captains;
+  return captains.filter((captain) => {
+    if (!captain.location) return false;
+
+    const captainLat = captain.location.ltd;
+    const captainLng = captain.location.lng;
+
+    if (captainLat == null || captainLng == null) return false;
+
+    const distance =
+      Math.sqrt(Math.pow(captainLat - lat, 2) + Math.pow(captainLng - lng, 2)) *
+      111;
+
+    return distance <= radius;
+  });
 };
