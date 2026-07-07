@@ -18,15 +18,13 @@ const RideBookingCard = ({
   destination,
   setDestination,
 }) => {
-  // =========================
   // INPUT STATES (TEXT)
-  // =========================
+
   const [pickupInput, setPickupInput] = useState("");
   const [destinationInput, setDestinationInput] = useState("");
 
-  // =========================
   // UI STATES
-  // =========================
+
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [activeField, setActiveField] = useState("pickup");
   const [suggestions, setSuggestions] = useState([]);
@@ -38,9 +36,8 @@ const RideBookingCard = ({
   const [selectedVehicle, setSelectedVehicle] = useState(null);
   const [fare, setFare] = useState(null);
 
-  // =========================
   // DEBOUNCED API CALL
-  // =========================
+
   useEffect(() => {
     const timeout = setTimeout(async () => {
       try {
@@ -67,9 +64,8 @@ const RideBookingCard = ({
     return () => clearTimeout(timeout);
   }, [pickupInput, destinationInput, activeField]);
 
-  // =========================
   // HANDLE LOCATION SELECT
-  // =========================
+
   const handleLocationSelect = (place) => {
     const location = {
       address: place.display_name,
@@ -89,9 +85,8 @@ const RideBookingCard = ({
     setShowSuggestions(false);
   };
 
-  // =========================
   // SEARCH RIDE
-  // =========================
+
   const handleSearchRide = async () => {
     if (!pickup.address || !destination.address) return;
 
@@ -105,9 +100,8 @@ const RideBookingCard = ({
     }
   };
 
-  // =========================
   // LOOKING FOR DRIVER PANEL
-  // =========================
+
   if (showLookingForDriver) {
     return (
       <LookingForDriverPanel
@@ -119,9 +113,8 @@ const RideBookingCard = ({
     );
   }
 
-  // =========================
   // CONFIRM RIDE PANEL
-  // =========================
+
   if (showConfirmRide) {
     return (
       <ConfirmRidePanel
@@ -130,8 +123,6 @@ const RideBookingCard = ({
         fare={fare}
         selectedVehicle={selectedVehicle}
         onRideCreated={(ride) => {
-          console.log("Ride created successfully:", ride);
-
           setShowConfirmRide(false);
           setShowLookingForDriver(true);
         }}
@@ -139,9 +130,8 @@ const RideBookingCard = ({
     );
   }
 
-  // =========================
   // VEHICLE PANEL
-  // =========================
+
   if (showVehiclePanel) {
     return (
       <VehiclePanel
@@ -157,9 +147,8 @@ const RideBookingCard = ({
     );
   }
 
-  // =========================
   // BOOKING CARD
-  // =========================
+
   return (
     <div className="w-full max-w-lg bg-white rounded-3xl border shadow-lg p-6 mt-2">
       <div className="space-y-5">

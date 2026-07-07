@@ -40,9 +40,8 @@ const LookingForDriverPanel = ({
     };
   }, []);
 
-  // =========================
   // Ride Completed
-  // =========================
+
   if (rideEnded && acceptedRide) {
     return (
       <div className="w-full max-w-lg bg-white rounded-3xl border shadow-lg p-6 mt-2">
@@ -84,9 +83,8 @@ const LookingForDriverPanel = ({
     );
   }
 
-  // =========================
   // Ride Started
-  // =========================
+
   if (rideStarted && acceptedRide) {
     return (
       <div className="w-full max-w-lg bg-white rounded-3xl border shadow-lg p-6 mt-2">
@@ -135,9 +133,8 @@ const LookingForDriverPanel = ({
     );
   }
 
-  // =========================
   // Driver Found
-  // =========================
+
   if (acceptedRide) {
     return (
       <div className="w-full max-w-lg bg-white rounded-3xl border shadow-lg p-6 mt-2">
@@ -184,9 +181,8 @@ const LookingForDriverPanel = ({
     );
   }
 
-  // =========================
   // Looking for Driver
-  // =========================
+
   return (
     <div className="w-full max-w-lg bg-white rounded-3xl border shadow-lg p-6 mt-2">
       <div className="space-y-6">

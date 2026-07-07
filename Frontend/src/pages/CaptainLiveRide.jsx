@@ -26,8 +26,6 @@ const CaptainLiveRide = () => {
 
       const completedRide = await endRide(ride._id);
 
-      console.log("Ride Completed:", completedRide);
-
       navigate("/captain-home");
     } catch (error) {
       console.log(error);

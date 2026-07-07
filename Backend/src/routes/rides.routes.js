@@ -11,9 +11,8 @@ import {
 
 const router = express.Router();
 
-// =========================
 // Create Ride
-// =========================
+
 router.post(
   "/create",
   authUser,
@@ -36,9 +35,8 @@ router.post(
   createRide,
 );
 
-// =========================
 // Get Fare
-// =========================
+
 router.get(
   "/get-fare",
   authUser,
@@ -56,9 +54,8 @@ router.get(
   getFare,
 );
 
-// =========================
 // Confirm Ride
-// =========================
+
 router.post(
   "/confirm",
   authCaptain,
@@ -68,9 +65,8 @@ router.post(
   confirmRide,
 );
 
-// =========================
 // Start Ride
-// =========================
+
 router.get(
   "/start-ride",
   authCaptain,
@@ -85,9 +81,8 @@ router.get(
   startRide,
 );
 
-// =========================
 // End Ride
-// =========================
+
 router.post(
   "/end-ride",
   authCaptain,

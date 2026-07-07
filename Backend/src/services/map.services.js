@@ -1,9 +1,8 @@
 import axios from "axios";
 import captainModel from "../models/captain.model.js";
 
-// ========================
 // Get Coordinates
-// ========================
+
 export const getAddressCoordinate = async (address) => {
   const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}`;
 
@@ -30,9 +29,8 @@ export const getAddressCoordinate = async (address) => {
   }
 };
 
-// ========================
 // Get Distance & Time
-// ========================
+
 export const getDistanceAndTime = async (originName, destinationName) => {
   try {
     const origin = await getAddressCoordinate(originName);
@@ -64,7 +62,6 @@ export const getDistanceAndTime = async (originName, destinationName) => {
       origin_coords: origin,
       destination_coords: destination,
 
-      // 👇 NEW
       route: feature.geometry.coordinates,
     };
   } catch (error) {
@@ -72,9 +69,9 @@ export const getDistanceAndTime = async (originName, destinationName) => {
     throw error;
   }
 };
-// ========================
+
 // Auto Complete Suggestions
-// ========================
+
 export const getAutoCompleteSuggestionservice = async (input) => {
   try {
     const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
@@ -98,9 +95,8 @@ export const getAutoCompleteSuggestionservice = async (input) => {
   }
 };
 
-// ========================
 // Get Captains In Radius
-// ========================
+
 export const getCaptainInTheRadius = async (lat, lng, radius) => {
   const captains = await captainModel.find({
     socketId: { $exists: true, $ne: null },

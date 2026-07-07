@@ -15,9 +15,8 @@ import { Button } from "@/components/ui/button";
 import RideBookingCard from "./RideBookingCard";
 import { getDistanceTime } from "@/features/map/services/map.service";
 
-// ============================
 // Controls Map
-// ============================
+
 function MapController({ center, route }) {
   const map = useMap();
 
@@ -37,9 +36,8 @@ function MapController({ center, route }) {
 const HeroMap = () => {
   const [mapCenter] = useState([28.6139, 77.209]); // Delhi
 
-  // ============================
   // Shared Ride State
-  // ============================
+
   const [pickup, setPickup] = useState({
     address: "",
     lat: null,
@@ -54,9 +52,8 @@ const HeroMap = () => {
 
   const [route, setRoute] = useState([]);
 
-  // ============================
   // Fetch Route
-  // ============================
+
   useEffect(() => {
     const fetchRoute = async () => {
       if (!pickup.address || !destination.address) {

@@ -29,9 +29,6 @@ const CaptainRiding = () => {
 
       const startedRide = await startRide(ride._id, otp);
 
-      console.log("Ride Started:", startedRide);
-
-      // We'll replace this navigation later
       navigate("/captain-live-ride", {
         state: {
           ride: startedRide,

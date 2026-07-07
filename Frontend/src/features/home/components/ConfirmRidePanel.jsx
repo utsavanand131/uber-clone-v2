@@ -34,8 +34,6 @@ const ConfirmRidePanel = ({
         vehicleType: selectedVehicle,
       });
 
-      console.log("Ride Created:", ride);
-
       // Notify parent component that ride has been created
       if (onRideCreated) {
         onRideCreated(ride);

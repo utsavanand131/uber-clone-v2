@@ -59,8 +59,6 @@ export default function CaptainLoginForm() {
     try {
       setLoading(true);
 
-      console.log("Sending:", data);
-
       const res = await axios.post(
         "http://localhost:5001/api/v1/captain/login",
         {
@@ -68,8 +66,6 @@ export default function CaptainLoginForm() {
           password: data.password,
         },
       );
-
-      console.log("SUCCESS:", res.data);
 
       setCaptain(res.data.captain);
       localStorage.setItem("token", res.data.token);

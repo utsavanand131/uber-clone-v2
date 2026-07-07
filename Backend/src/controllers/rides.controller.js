@@ -17,9 +17,8 @@ import {
 import { sendMessageToSocketId } from "../socket.js";
 import captainModel from "../models/captain.model.js";
 
-// =========================
 // Create Ride
-// =========================
+
 export const createRide = async (req, res) => {
   const errors = validationResult(req);
 
@@ -47,9 +46,6 @@ export const createRide = async (req, res) => {
       2,
     );
 
-    console.log("Pickup Coordinates:", pickupCoordinates);
-    console.log("Captains Found:", captainsInRadius.length);
-
     ride.otp = "";
 
     const rideWithUser = await rideModel.findById(ride._id).populate("user");
@@ -68,9 +64,8 @@ export const createRide = async (req, res) => {
   }
 };
 
-// =========================
 // Get Fare
-// =========================
+
 export const getFare = async (req, res) => {
   const errors = validationResult(req);
 
@@ -90,9 +85,8 @@ export const getFare = async (req, res) => {
   }
 };
 
-// =========================
 // Confirm Ride
-// =========================
+
 export const confirmRide = async (req, res) => {
   const errors = validationResult(req);
 
@@ -120,9 +114,8 @@ export const confirmRide = async (req, res) => {
   }
 };
 
-// =========================
 // Start Ride
-// =========================
+
 export const startRide = async (req, res) => {
   const errors = validationResult(req);
 
@@ -151,9 +144,8 @@ export const startRide = async (req, res) => {
   }
 };
 
-// =========================
 // End Ride
-// =========================
+
 export const endRide = async (req, res) => {
   const errors = validationResult(req);
 

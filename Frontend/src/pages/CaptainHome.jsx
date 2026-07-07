@@ -14,9 +14,8 @@ const CaptainHome = () => {
   const [ride, setRide] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // =========================
   // Join Socket
-  // =========================
+
   useEffect(() => {
     if (!captain?._id) return;
 
@@ -26,9 +25,8 @@ const CaptainHome = () => {
     });
   }, [captain]);
 
-  // =========================
   // Send Captain Location
-  // =========================
+
   useEffect(() => {
     if (!captain?._id) return;
 
@@ -59,9 +57,8 @@ const CaptainHome = () => {
     return () => clearInterval(interval);
   }, [captain]);
 
-  // =========================
   // Listen for Ride Requests
-  // =========================
+
   useEffect(() => {
     socket.on("new-ride", (rideData) => {
       setRide(rideData);
@@ -72,9 +69,8 @@ const CaptainHome = () => {
     };
   }, []);
 
-  // =========================
   // Accept Ride
-  // =========================
+
   const handleAcceptRide = async () => {
     try {
       setLoading(true);

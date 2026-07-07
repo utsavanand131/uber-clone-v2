@@ -9,9 +9,8 @@ import {
 
 const router = express.Router();
 
-// =======================
 // Get Coordinates
-// =======================
+
 router.get(
   "/get-coordinates",
   authUser,
@@ -19,9 +18,8 @@ router.get(
   getCoordinates,
 );
 
-// =======================
 // Get Distance & Time
-// =======================
+
 router.get(
   "/get-distance-time",
   authUser,
@@ -30,9 +28,8 @@ router.get(
   getDistanceTime,
 );
 
-// =======================
-// Suggestions (NO AUTH NEEDED)
-// =======================
+// Suggestions
+
 router.get(
   "/get-suggestions",
   query("input").isString().isLength({ min: 2 }),

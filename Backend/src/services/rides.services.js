@@ -2,9 +2,8 @@ import rideModel from "../models/ride.model.js";
 import { getDistanceAndTime } from "../services/map.services.js";
 import crypto from "crypto";
 
-// ==========================
 // Calculate Fare
-// ==========================
+
 export const getFareService = async (pickup, destination) => {
   if (!pickup || !destination) {
     throw new Error("Pickup and destination are required");
@@ -54,16 +53,14 @@ export const getFareService = async (pickup, destination) => {
   };
 };
 
-// ==========================
 // Generate OTP
-// ==========================
+
 const getOtp = (num) => {
   return crypto.randomInt(Math.pow(10, num - 1), Math.pow(10, num)).toString();
 };
 
-// ==========================
 // Create Ride
-// ==========================
+
 export const createRideService = async ({
   user,
   pickup,
@@ -84,9 +81,8 @@ export const createRideService = async ({
   return ride;
 };
 
-// ==========================
 // Confirm Ride
-// ==========================
+
 export const confirmRideService = async ({ rideId, captain }) => {
   await rideModel.findByIdAndUpdate(rideId, {
     status: "accepted",
@@ -102,9 +98,8 @@ export const confirmRideService = async ({ rideId, captain }) => {
   return ride;
 };
 
-// ==========================
 // Start Ride
-// ==========================
+
 export const startRideService = async ({ rideId, otp, captain }) => {
   const ride = await rideModel
     .findById(rideId)
@@ -134,9 +129,8 @@ export const startRideService = async ({ rideId, otp, captain }) => {
   return ride;
 };
 
-// ==========================
 // End Ride
-// ==========================
+
 export const endRideService = async ({ rideId, captain }) => {
   const ride = await rideModel
     .findOne({

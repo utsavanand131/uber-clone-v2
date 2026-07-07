@@ -60,15 +60,10 @@ export default function UserLoginForm() {
     try {
       setLoading(true);
 
-      console.log("Sending:", data);
-
       const res = await axios.post("http://localhost:5001/api/v1/users/login", {
         email: data.email,
         password: data.password,
       });
-
-      console.log("SUCCESS:", res.data);
-      console.log("Logged In User:", res.data.user);
 
       setUser(res.data.user);
 
