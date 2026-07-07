@@ -104,3 +104,26 @@ export const confirmRide = async (rideId) => {
 
   return data;
 };
+// ===========================
+// Start Ride
+// ===========================
+export const startRide = async (rideId, otp) => {
+  const { data } = await API.get("/rides/start-ride", {
+    params: {
+      rideId,
+      otp,
+    },
+  });
+
+  return data;
+};
+// ===========================
+// End Ride
+// ===========================
+export const endRide = async (rideId) => {
+  const { data } = await API.post("/rides/end-ride", {
+    rideId,
+  });
+
+  return data;
+};
