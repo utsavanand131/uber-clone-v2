@@ -9,18 +9,77 @@ const LookingForDriverPanel = ({
   selectedVehicle,
 }) => {
   const [acceptedRide, setAcceptedRide] = useState(null);
+  const [rideStarted, setRideStarted] = useState(false);
 
   useEffect(() => {
     const handleRideConfirmed = (ride) => {
       setAcceptedRide(ride);
     };
 
+    const handleRideStarted = (ride) => {
+      setAcceptedRide(ride);
+      setRideStarted(true);
+    };
+
     socket.on("ride-confirmed", handleRideConfirmed);
+    socket.on("ride-started", handleRideStarted);
 
     return () => {
       socket.off("ride-confirmed", handleRideConfirmed);
+      socket.off("ride-started", handleRideStarted);
     };
   }, []);
+
+  // =========================
+  // Ride Started
+  // =========================
+  if (rideStarted && acceptedRide) {
+    return (
+      <div className="w-full max-w-lg bg-white rounded-3xl border shadow-lg p-6 mt-2">
+        <div className="space-y-6">
+          <div className="flex flex-col items-center">
+            <CheckCircle className="h-14 w-14 text-green-600" />
+
+            <h2 className="text-2xl font-bold mt-4 text-green-600">
+              Ride Started 🚗
+            </h2>
+
+            <p className="text-gray-500 mt-2">
+              Your captain is taking you to your destination.
+            </p>
+          </div>
+
+          <div className="rounded-2xl border divide-y">
+            <div className="p-4">
+              <p className="font-medium">Captain</p>
+
+              <p>
+                {acceptedRide.captain.fullname.firstname}{" "}
+                {acceptedRide.captain.fullname.lastname}
+              </p>
+            </div>
+
+            <div className="p-4">
+              <p className="font-medium">Vehicle</p>
+
+              <p>
+                {acceptedRide.captain.vehicles.color} •{" "}
+                {acceptedRide.captain.vehicles.vehicleType}
+              </p>
+
+              <p>{acceptedRide.captain.vehicles.plate}</p>
+            </div>
+
+            <div className="p-4">
+              <p className="font-medium">Fare</p>
+
+              <p>₹{acceptedRide.fare}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // =========================
   // Driver Found
