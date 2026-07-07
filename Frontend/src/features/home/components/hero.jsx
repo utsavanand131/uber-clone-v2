@@ -9,14 +9,11 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { Icon } from "leaflet";
-import { CarFront } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import RideBookingCard from "./RideBookingCard";
 import { getDistanceTime } from "@/features/map/services/map.service";
 
 // Controls Map
-
 function MapController({ center, route }) {
   const map = useMap();
 
@@ -37,7 +34,6 @@ const HeroMap = () => {
   const [mapCenter] = useState([28.6139, 77.209]); // Delhi
 
   // Shared Ride State
-
   const [pickup, setPickup] = useState({
     address: "",
     lat: null,
@@ -53,7 +49,6 @@ const HeroMap = () => {
   const [route, setRoute] = useState([]);
 
   // Fetch Route
-
   useEffect(() => {
     const fetchRoute = async () => {
       if (!pickup.address || !destination.address) {
@@ -70,7 +65,7 @@ const HeroMap = () => {
 
         setRoute(coordinates);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
 
@@ -93,13 +88,7 @@ const HeroMap = () => {
           <span className="block">Uber</span>
         </h1>
 
-        <div className="mt-8 flex flex-col items-start space-y-4">
-          <Button variant="outline" size="icon">
-            <CarFront size={26} />
-          </Button>
-
-          <span className="text-lg font-medium">Ride</span>
-
+        <div className="mt-8">
           <RideBookingCard
             pickup={pickup}
             setPickup={setPickup}
