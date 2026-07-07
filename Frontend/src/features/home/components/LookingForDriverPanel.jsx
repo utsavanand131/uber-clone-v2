@@ -10,6 +10,7 @@ const LookingForDriverPanel = ({
 }) => {
   const [acceptedRide, setAcceptedRide] = useState(null);
   const [rideStarted, setRideStarted] = useState(false);
+  const [rideEnded, setRideEnded] = useState(false);
 
   useEffect(() => {
     const handleRideConfirmed = (ride) => {
@@ -21,14 +22,67 @@ const LookingForDriverPanel = ({
       setRideStarted(true);
     };
 
+    const handleRideEnded = (ride) => {
+      console.log("Ride Ended:", ride);
+
+      setAcceptedRide(ride);
+      setRideEnded(true);
+    };
+
     socket.on("ride-confirmed", handleRideConfirmed);
     socket.on("ride-started", handleRideStarted);
+    socket.on("ride-ended", handleRideEnded);
 
     return () => {
       socket.off("ride-confirmed", handleRideConfirmed);
       socket.off("ride-started", handleRideStarted);
+      socket.off("ride-ended", handleRideEnded);
     };
   }, []);
+
+  // =========================
+  // Ride Completed
+  // =========================
+  if (rideEnded && acceptedRide) {
+    return (
+      <div className="w-full max-w-lg bg-white rounded-3xl border shadow-lg p-6 mt-2">
+        <div className="space-y-6">
+          <div className="flex flex-col items-center">
+            <CheckCircle className="h-16 w-16 text-green-600" />
+
+            <h2 className="text-3xl font-bold text-green-600">
+              Ride Completed 🎉
+            </h2>
+
+            <p className="text-gray-500 mt-2">Thank you for riding with us.</p>
+          </div>
+
+          <div className="rounded-2xl border divide-y">
+            <div className="p-4">
+              <p className="font-medium">Captain</p>
+
+              <p>
+                {acceptedRide.captain.fullname.firstname}{" "}
+                {acceptedRide.captain.fullname.lastname}
+              </p>
+            </div>
+
+            <div className="p-4">
+              <p className="font-medium">Fare Paid</p>
+
+              <p className="text-2xl font-bold">₹{acceptedRide.fare}</p>
+            </div>
+
+            <div className="p-4">
+              <p className="font-medium">Status</p>
+
+              <p className="text-green-600 font-semibold">Completed</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // =========================
   // Ride Started
