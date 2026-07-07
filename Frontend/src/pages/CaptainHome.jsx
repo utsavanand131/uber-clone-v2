@@ -1,4 +1,6 @@
 import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import socket from "@/socket/socket";
 import { CaptainDataContext } from "@/features/captain/context/CaptainContext";
 import { Button } from "@/components/ui/button";
@@ -6,6 +8,8 @@ import { confirmRide } from "@/features/map/services/map.service";
 
 const CaptainHome = () => {
   const { captain } = useContext(CaptainDataContext);
+
+  const navigate = useNavigate();
 
   const [ride, setRide] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -49,7 +53,7 @@ const CaptainHome = () => {
     // Send immediately
     updateLocation();
 
-    // Then every 10 seconds
+    // Update every 10 seconds
     const interval = setInterval(updateLocation, 10000);
 
     return () => clearInterval(interval);
@@ -75,9 +79,13 @@ const CaptainHome = () => {
     try {
       setLoading(true);
 
-      const data = await confirmRide(ride._id);
+      const acceptedRide = await confirmRide(ride._id);
 
-      setRide(null);
+      navigate("/captain-riding", {
+        state: {
+          ride: acceptedRide,
+        },
+      });
     } catch (error) {
       console.log(error);
     } finally {
