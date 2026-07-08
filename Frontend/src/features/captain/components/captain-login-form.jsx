@@ -60,7 +60,7 @@ export default function CaptainLoginForm() {
       setLoading(true);
 
       const res = await axios.post(
-        "http://localhost:5001/api/v1/captain/login",
+        "https://uber-clone-backend-5exd.onrender.com/api/v1/captain/login",
         {
           email: data.email,
           password: data.password,

@@ -89,7 +89,7 @@ export default function CaptainRegisterForm() {
       console.log("Sending:", formattedCaptain);
 
       const res = await axios.post(
-        "http://localhost:5001/api/v1/captain/register",
+        "https://uber-clone-backend-5exd.onrender.com/api/v1/captain/register",
         formattedCaptain,
       );
 

@@ -72,10 +72,9 @@ export default function UserRegisterForm() {
       console.log("Sending:", formattedUser);
 
       const res = await axios.post(
-        "http://localhost:5001/api/v1/users/register",
+        "https://uber-clone-backend-5exd.onrender.com/api/v1/users/register",
         formattedUser,
       );
-
       console.log("SUCCESS:", res.data);
 
       setUser(res.data.user);

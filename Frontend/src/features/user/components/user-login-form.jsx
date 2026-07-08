@@ -60,11 +60,13 @@ export default function UserLoginForm() {
     try {
       setLoading(true);
 
-      const res = await axios.post("http://localhost:5001/api/v1/users/login", {
-        email: data.email,
-        password: data.password,
-      });
-
+      const res = await axios.post(
+        "https://uber-clone-backend-5exd.onrender.com/api/v1/users/login",
+        {
+          email: data.email,
+          password: data.password,
+        },
+      );
       setUser(res.data.user);
 
       localStorage.setItem("token", res.data.token);
