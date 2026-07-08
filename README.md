@@ -1,6 +1,7 @@
 # 🚖 Uber Clone
 
-A full-stack Uber Clone built with the MERN stack, Socket.IO, and OpenRouteService. Users can book rides, captains receive ride requests in real time, verify OTP before starting the trip, and complete rides with live status updates.
+A full-stack Uber Clone built with the MERN stack, Socket.IO , OpenRouteService API
+Nominatim Geocoding API. Users can book rides, captains receive ride requests in real time, verify OTP before starting the trip, and complete rides with live status updates.
 
 ## 🚀 Features
 
@@ -177,43 +178,8 @@ Ride Completed
 
 ---
 
-## 📸 Screenshots
-
-Add screenshots here after deployment.
-
-- Home Page
-- User Login
-- Captain Dashboard
-- Driver Found
-- OTP Verification
-- Ride Started
-- Ride Completed
-
----
-
-## 📌 Future Improvements
-
-- Live GPS tracking
-- Captain movement on map
-- Ride history
-- Ratings & reviews
-- Payment gateway integration
-- Push notifications
-- Multiple vehicle categories
-- Admin dashboard
-
----
-
 ## 👨‍💻 Author
 
 **Utsav Anand**
 
 GitHub: https://github.com/utsavanand131
-
-LinkedIn: _(Add your LinkedIn profile here)_
-
----
-
-## ⭐ Support
-
-If you found this project useful, consider giving it a ⭐ on GitHub.
